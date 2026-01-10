@@ -209,6 +209,14 @@ on:
         description: "Set fnnas image file path"
         required: false
         default: ""
+      fnnas_base_version:
+        description: "Select the fnnas base image version"
+        required: false
+        default: "amlogic_300"
+        type: choice
+        options:
+          - amlogic_300
+          - rockchip_296
       fnnas_storage:
         description: "Select image storage type."
         required: false
@@ -295,6 +303,7 @@ jobs:
           [[ -d "fnnas" ]] || mkdir -p fnnas
 
           input_url="${{ inputs.fnnas_url }}"
+          fnnas_base_version="${{ inputs.fnnas_base_version }}"
 
           # -------------------------------------------------------
           # Case A: URL specified
@@ -351,8 +360,8 @@ jobs:
                   -H "Accept: application/vnd.github+json" \
                   -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                   https://api.github.com/repos/ophub/fnnas/releases?per_page=20 | \
-                  jq -r --arg RTK "fnnas_arm64" \
-                  --arg BOARD "fnnas-official-arm64-image_" \
+                  jq -r --arg RTK "fnnas_base_image" \
+                  --arg BOARD "${fnnas_base_version}" \
                   '[.[] | select(.tag_name | contains($RTK))] |
                   map(.assets[] | select(.name | contains($BOARD) and endswith(".img.xz"))) |
                   sort_by(.updated_at) |
