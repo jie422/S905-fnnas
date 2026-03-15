@@ -1089,7 +1089,7 @@ refactor_rootfs() {
 }
 
 clean_tmp() {
-    process_msg "(7/7) Cleaning up temporary files."
+    process_msg "(7/7) Cleaning temporary files."
     cd ${current_path}
 
     umount -f ${tmp_fnnas} 2>/dev/null
